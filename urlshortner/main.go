@@ -1,7 +1,10 @@
 package main
 
+import "shubham/urlShortner/controller"
+
 func main() {
 	app := CreateApp()
-	InitializeApp(app)
+	handler := controller.CreateUrlController()
+	InitializeApp(app, &handler)
 	RunApp(app)
 }
