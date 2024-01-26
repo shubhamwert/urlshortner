@@ -18,6 +18,10 @@ func CreateUrlController() UrlController {
 	}
 }
 
+func (u *UrlController) Test() {
+	u.db.Test()
+}
+
 func (u *UrlController) Shorten(ctx context.Context, url string) (string, error) {
 
 	urlObject := model.UrlModel{}

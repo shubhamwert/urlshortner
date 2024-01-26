@@ -33,7 +33,7 @@ func (c *controller) Delete() {}
 
 func (c *controller) Test() {
 	ctx := context.Background()
-	m, err := model.CreateUrlModel("1", "a", "b")
+	m, err := model.CreateUrlModel("12", "a", "b")
 	if err != nil {
 		fmt.Println("Mem not working")
 	}

@@ -60,10 +60,10 @@ func (M *mongoStorage) Set(ctx context.Context, url UrlModel) error {
 
 func (M *mongoStorage) Get(ctx context.Context, url string) (UrlModel, error) {
 	var urlModel UrlModel
-	err := M.Coll.FindOne(context.TODO(), bson.D{primitive.E{Key: "url", Value: url}}).Decode(&urlModel)
+	err := M.Coll.FindOne(context.TODO(), bson.D{primitive.E{Key: "EncodedUrl", Value: url}}).Decode(&urlModel)
 	if err == mongo.ErrNoDocuments {
-		fmt.Printf("No document was found with the url %s\n", url)
-		return UrlModel{}, nil
+		fmt.Printf("No document was found with the url %s %s\n", url, err)
+		return urlModel, nil
 	}
 	if err != nil {
 		panic(err)
@@ -77,6 +77,42 @@ func (M *mongoStorage) Get(ctx context.Context, url string) (UrlModel, error) {
 }
 
 func (M *mongoStorage) ListAllKeys() {
+	//find records
+	//pass these options to the Find method
+	findOptions := options.Find()
+	//Set the limit of the number of record to find
+	findOptions.SetLimit(5)
+	//Define an array in which you can store the decoded documents
+	var results []UrlModel
+
+	//Passing the bson.D{{}} as the filter matches  documents in the collection
+	cur, err := M.Coll.Find(context.TODO(), bson.D{{}}, findOptions)
+	if err != nil {
+		log.Fatal(err)
+	}
+	//Finding multiple documents returns a cursor
+	//Iterate through the cursor allows us to decode documents one at a time
+
+	for cur.Next(context.TODO()) {
+		//Create a value into which the single document can be decoded
+		var elem UrlModel
+		err := cur.Decode(&elem)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		results = append(results, elem)
+
+	}
+
+	if err := cur.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	//Close the cursor once finished
+	cur.Close(context.TODO())
+
+	fmt.Printf("Found multiple documents: %+v\n", results)
 
 }
 
