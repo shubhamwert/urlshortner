@@ -1,7 +1,7 @@
 package model
 
 type UrlModel struct {
-	Id          string `json:"id"`
+	Id          string `json:"id" bson:"_id"`
 	OriginalUrl string `json:"url" bson:"OriginalUrl"`
 	EncodedUrl  string `json:"encodedUrl" bson:"EncodedUrl"`
 }
@@ -12,7 +12,6 @@ func (u *UrlModel) GetUrlModel() (UrlModel, error) {
 
 func CreateUrlModel(id string, url string, encoding string) (*UrlModel, error) {
 	u := &UrlModel{
-		Id:          id,
 		OriginalUrl: url,
 		EncodedUrl:  encoding,
 	}

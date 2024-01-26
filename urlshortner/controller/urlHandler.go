@@ -7,19 +7,20 @@ import (
 )
 
 type UrlController struct {
-	db *controller
+	db    *controller
+	cache *cacheController
 }
 
 func CreateUrlController() UrlController {
 	return UrlController{
 		db: CreateController(),
+		// cache: createCacheController(),
 	}
 }
 
 func (u *UrlController) Shorten(ctx context.Context, url string) (string, error) {
 
 	urlObject := model.UrlModel{}
-
 	urlObject.OriginalUrl = url
 	urlObject.EncodedUrl = url[:8]
 	err := u.db.Set(ctx, urlObject)
@@ -31,6 +32,7 @@ func (u *UrlController) Shorten(ctx context.Context, url string) (string, error)
 }
 
 func (u *UrlController) GetUrl(ctx context.Context, url string) (string, error) {
+	// Try adding cachce
 
 	urlObject, err := u.db.Get(ctx, url)
 	if err != nil {

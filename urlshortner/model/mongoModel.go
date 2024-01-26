@@ -7,6 +7,7 @@ import (
 	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -59,7 +60,7 @@ func (M *mongoStorage) Set(ctx context.Context, url UrlModel) error {
 
 func (M *mongoStorage) Get(ctx context.Context, url string) (UrlModel, error) {
 	var urlModel UrlModel
-	err := M.Coll.FindOne(context.TODO(), bson.D{{"url", url}}).Decode(&urlModel)
+	err := M.Coll.FindOne(context.TODO(), bson.D{primitive.E{Key: "url", Value: url}}).Decode(&urlModel)
 	if err == mongo.ErrNoDocuments {
 		fmt.Printf("No document was found with the url %s\n", url)
 		return UrlModel{}, nil
