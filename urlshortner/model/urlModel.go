@@ -1,7 +1,7 @@
 package model
 
 type UrlModel struct {
-	Id          string `json:"id" bson:"_id"`
+	Id          string `json:"id"`
 	OriginalUrl string `json:"url" bson:"OriginalUrl"`
 	EncodedUrl  string `json:"encodedUrl" bson:"EncodedUrl"`
 }

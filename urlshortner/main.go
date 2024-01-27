@@ -6,6 +6,5 @@ func main() {
 	app := CreateApp()
 	handler := controller.CreateUrlController()
 	InitializeApp(app, &handler)
-	handler.Test()
 	RunApp(app)
 }

@@ -19,6 +19,7 @@ func createCacheController() *cacheController {
 }
 
 func (c *cacheController) Get(ctx context.Context, url string) (model.UrlModel, error) {
+
 	u, err := c.cacheClient.Get(ctx, url)
 
 	if err != nil {
@@ -26,7 +27,7 @@ func (c *cacheController) Get(ctx context.Context, url string) (model.UrlModel, 
 	}
 	if ctx.Err() == context.DeadlineExceeded {
 
-		return model.UrlModel{}, fmt.Errorf("ctx deadline excedded")
+		return model.UrlModel{}, fmt.Errorf("ctx deadline exceded")
 	}
 	return u, nil
 }
