@@ -37,7 +37,7 @@ func (M *inMemoryStorage) Set(ctx context.Context, url UrlModel) error {
 	return errors.New("Encoding Already exists")
 }
 
-func (M *inMemoryStorage) Get(ctx context.Context, url string) (UrlModel, error) {
+func (M *inMemoryStorage) Get(ctx context.Context, url string, Owner string) (UrlModel, error) {
 	M.ListAllKeys()
 
 	val, ok := M.Url[url]

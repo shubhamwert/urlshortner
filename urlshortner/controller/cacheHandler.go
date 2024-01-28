@@ -11,16 +11,16 @@ type cacheController struct {
 }
 
 func createCacheController() *cacheController {
-	c := model.CreateredisStorage()
+	c := model.CreateredisStorage("localhost:6379", "", 0)
 	return &cacheController{
 		cacheClient: c,
 	}
 
 }
 
-func (c *cacheController) Get(ctx context.Context, url string) (model.UrlModel, error) {
+func (c *cacheController) Get(ctx context.Context, url string, owner string) (model.UrlModel, error) {
 
-	u, err := c.cacheClient.Get(ctx, url)
+	u, err := c.cacheClient.Get(ctx, url, owner)
 
 	if err != nil {
 		return model.UrlModel{}, err

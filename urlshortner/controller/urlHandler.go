@@ -19,11 +19,13 @@ func CreateUrlController() UrlController {
 	}
 }
 
-func (u *UrlController) Shorten(ctx context.Context, url string) (string, error) {
+func (u *UrlController) Shorten(ctx context.Context, url string, owner string) (string, error) {
 
 	urlObject := model.UrlModel{}
 	urlObject.OriginalUrl = url
 	urlObject.EncodedUrl = url[:8]
+	urlObject.Owner = owner
+	fmt.Println("Shorten ", urlObject)
 	err := u.db.Set(ctx, urlObject)
 	if err != nil {
 		fmt.Println(err)
@@ -31,13 +33,14 @@ func (u *UrlController) Shorten(ctx context.Context, url string) (string, error)
 	return urlObject.EncodedUrl, nil
 }
 
-func (u *UrlController) GetUrl(ctx context.Context, url string) (string, error) {
+func (u *UrlController) GetUrl(ctx context.Context, url string, owner string) (string, error) {
 	// Try adding cachce
+	u.db.Test()
 	CacheCtx, cacheErr := context.WithTimeout(ctx, 3*time.Second)
 	defer cacheErr()
 	cacheChannel := make(chan model.UrlModel, 1)
 	go func() {
-		urlObject, err := u.cache.Get(CacheCtx, url)
+		urlObject, err := u.cache.Get(CacheCtx, url, owner)
 		if err != nil {
 			fmt.Println("Error getting from cache")
 			return
@@ -51,7 +54,7 @@ func (u *UrlController) GetUrl(ctx context.Context, url string) (string, error) 
 	case <-time.After(1 * time.Second):
 		fmt.Println("Timeout!")
 		var err error
-		urlObject, err = u.db.Get(ctx, url)
+		urlObject, err = u.db.Get(ctx, url, owner)
 		if err != nil {
 			fmt.Println("ERROR ", err)
 

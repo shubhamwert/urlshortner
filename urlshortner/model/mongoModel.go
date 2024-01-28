@@ -19,9 +19,9 @@ type mongoStorage struct {
 	Coll        *mongo.Collection
 }
 
-func CreatemongoStorage() *mongoStorage {
+func CreatemongoStorage(MongoURL string, MongoDb string, Collection string) *mongoStorage {
 	var ctx = context.TODO()
-	clientOptions := options.Client().ApplyURI("mongodb://admin:password@localhost:27017/")
+	clientOptions := options.Client().ApplyURI(MongoURL)
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Println("Error at mongo conn")
@@ -29,13 +29,13 @@ func CreatemongoStorage() *mongoStorage {
 	mongoClient := mongoStorage{
 		mongoClient: client,
 	}
-	mongoClient.Db = "UrlDb"
+	mongoClient.Db = MongoDb
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	err = client.Ping(ctx, nil)
-	mongoClient.Coll = mongoClient.mongoClient.Database(mongoClient.Db).Collection("ShortenedUrl")
+	mongoClient.Coll = mongoClient.mongoClient.Database(mongoClient.Db).Collection(Collection)
 
 	if err != nil {
 		log.Fatal(err)
@@ -58,7 +58,7 @@ func (M *mongoStorage) Set(ctx context.Context, url UrlModel) error {
 	return err
 }
 
-func (M *mongoStorage) Get(ctx context.Context, url string) (UrlModel, error) {
+func (M *mongoStorage) Get(ctx context.Context, url string, Owner string) (UrlModel, error) {
 	var urlModel UrlModel
 	err := M.Coll.FindOne(context.TODO(), bson.D{primitive.E{Key: "EncodedUrl", Value: url}}).Decode(&urlModel)
 	if err == mongo.ErrNoDocuments {

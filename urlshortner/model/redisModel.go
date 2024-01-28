@@ -12,12 +12,12 @@ type redisStorage struct {
 	redisClient *redis.Client
 }
 
-func CreateredisStorage() *redisStorage {
+func CreateredisStorage(redisAddr string, pass string, RedisefaultDB int) *redisStorage {
 	redisClient := &redisStorage{
 		redisClient: redis.NewClient(&redis.Options{
-			Addr:     "localhost:6379",
-			Password: "", // no password set
-			DB:       0,  // use default DB
+			Addr:     redisAddr,
+			Password: pass,          // no password set
+			DB:       RedisefaultDB, // use default DB
 		}),
 	}
 
@@ -35,7 +35,7 @@ func (M *redisStorage) Set(ctx context.Context, url UrlModel) error {
 	return M.redisClient.Set(ctx, url.EncodedUrl, urlJson, 0).Err()
 }
 
-func (M *redisStorage) Get(ctx context.Context, url string) (UrlModel, error) {
+func (M *redisStorage) Get(ctx context.Context, url string, Owner string) (UrlModel, error) {
 
 	val, err := M.redisClient.Get(ctx, url).Result()
 
