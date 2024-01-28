@@ -39,7 +39,10 @@ func GetShortenUrl(c *fiber.Ctx) error {
 
 	p := c.Params("url")
 	u, err := handler.GetUrl(c.Context(), p, c.Get("x-auth-user", "test"))
-
+	if u == "" {
+		c.SendStatus(404)
+		return nil
+	}
 	if err != nil {
 		fmt.Println(err)
 
