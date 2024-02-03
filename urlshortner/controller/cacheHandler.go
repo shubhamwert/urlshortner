@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"fmt"
+	"log"
 	"shubham/urlShortner/model"
 )
 
@@ -10,8 +11,11 @@ type cacheController struct {
 	cacheClient model.UrlStorageDB
 }
 
-func createCacheController() *cacheController {
-	c := model.CreateredisStorage("localhost:6379", "", 0)
+func createCacheController(dbName string) *cacheController {
+	c, err := CreateStoreHandlerControllerModel(dbName)
+	if err != nil {
+		log.Println("Error while creating cache")
+	}
 	return &cacheController{
 		cacheClient: c,
 	}

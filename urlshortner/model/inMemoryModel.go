@@ -1,8 +1,6 @@
 //go:build ignore
 // +build ignore
 
-//ignore in main buidl
-
 package model
 
 import (

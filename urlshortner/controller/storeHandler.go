@@ -10,13 +10,14 @@ type controller struct {
 	controller model.UrlStorageDB
 }
 
-func CreateController() *controller {
+func CreateController(dbName string) *controller {
 	// db := model.CreateinMemoryStorage()
 	// db := model.CreateredisStorage()
 	// db := model.CreatemongoStorage("mongodb://admin:password@localhost:27017/", "UrlDb", "ShortenedUrl")
-	db, err := model.CreateDynamoDbModel("UrlDb")
+	fmt.Println(dbName)
+	db, err := CreateStoreHandlerControllerModel(dbName)
 	if err != nil {
-		fmt.Println("Error in storeController")
+		fmt.Println("Error in storeController", err)
 	}
 	controller := &controller{
 		controller: db,

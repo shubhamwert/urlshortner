@@ -1,0 +1,18 @@
+{
+    "mongo":{
+        "url": "mongodb://admin:password@localhost:27017/",
+        "db": "UrlDb",
+        "Collection": "ShortenedUrl"
+    },
+    "redis":{
+        "addr":"localhost:6379",
+        "pass":"",
+        "DefaultDb":0
+    },
+    "dynamodb":{
+        "tablename": "UrlDb"
+    },
+    "storagedb": "dynamodb",
+    "cachedb": "redis"
+
+}

@@ -12,12 +12,12 @@ type redisStorage struct {
 	redisClient *redis.Client
 }
 
-func CreateredisStorage(redisAddr string, pass string, RedisefaultDB int) *redisStorage {
+func CreateredisStorage(redisAddr string, pass string, RedisdefaultDB int) *redisStorage {
 	redisClient := &redisStorage{
 		redisClient: redis.NewClient(&redis.Options{
 			Addr:     redisAddr,
-			Password: pass,          // no password set
-			DB:       RedisefaultDB, // use default DB
+			Password: pass,           // no password set
+			DB:       RedisdefaultDB, // use default DB
 		}),
 	}
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"shubham/urlShortner/model"
+	"shubham/urlShortner/repo"
 	"time"
 )
 
@@ -12,10 +13,10 @@ type UrlController struct {
 	cache *cacheController
 }
 
-func CreateUrlController() UrlController {
+func CreateUrlController(urlStoreName string, urlCacheName string) UrlController {
 	return UrlController{
-		db:    CreateController(),
-		cache: createCacheController(),
+		db:    CreateController(urlStoreName),
+		cache: createCacheController(urlCacheName),
 	}
 }
 
@@ -23,7 +24,7 @@ func (u *UrlController) Shorten(ctx context.Context, url string, owner string) (
 
 	urlObject := model.UrlModel{}
 	urlObject.OriginalUrl = url
-	urlObject.EncodedUrl = url[:8]
+	urlObject.EncodedUrl = repo.CreateShortUrl(url, 5)
 	urlObject.Owner = owner
 	fmt.Println("Shorten ", urlObject)
 	err := u.db.Set(ctx, urlObject)
@@ -35,7 +36,6 @@ func (u *UrlController) Shorten(ctx context.Context, url string, owner string) (
 
 func (u *UrlController) GetUrl(ctx context.Context, url string, owner string) (string, error) {
 	// Try adding cachce
-	u.db.Test()
 	CacheCtx, cacheErr := context.WithTimeout(ctx, 3*time.Second)
 	defer cacheErr()
 	cacheChannel := make(chan model.UrlModel, 1)
