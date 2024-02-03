@@ -24,11 +24,14 @@ services:
       - mongodb-data:/data/db
     env_file: .env
   dynamodb-local:
-    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    command: "-jar DynamoDBLocal.jar -sharedDb"
     image: "amazon/dynamodb-local:latest"
     container_name: dynamodb-local
+    volumes:
+      - dynamodb-data:/data
     ports:
       - "8000:8000"
     working_dir: /home/dynamodblocal
 volumes:
   mongodb-data:
+  dynamodb-data:
