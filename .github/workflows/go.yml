@@ -23,5 +23,5 @@ jobs:
     - name: ChangeHome
       run: cd urlshortner
     - name: Build
-      run: go build -race -o ../releases/2024-02-03/urlshortner .
+      run: ls -alh && go build -race -o ../releases/2024-02-03/urlshortner .
 
