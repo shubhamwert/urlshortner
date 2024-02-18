@@ -14,13 +14,23 @@ docker compose up
 ```bash
 cd urlshortner
 ```
+## Run as docker
+```bash
+docker run -it -p 9080:9080 dockerofshubham/go-urlshortner 
+
+```
+## Mount Config
+```bash
+docker run -it -v <path-to-config>:/configs dockerofshubham/go-urlshortner 
+
+```
 
 
 ## Build
 ```bash
 cd urlshortner
-mkdir -p ../releases/$(date +%F) 
-go build -ldflags="-s -w"  -o ../releases/$(date +%F)/urlshortner .
+mkdir -p ../releases/size-reduced-$(date +%F) 
+go build -ldflags="-s -w" -gcflags=all="-1 -B"   -o ../releases/size-reduced-$(date +%F)/urlshortner .
 
 ```
 ## Run with prebuild 

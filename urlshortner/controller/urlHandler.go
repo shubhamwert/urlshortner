@@ -6,6 +6,8 @@ import (
 	"shubham/urlShortner/model"
 	"shubham/urlShortner/repo"
 	"time"
+
+	"github.com/spf13/viper"
 )
 
 type UrlController struct {
@@ -13,10 +15,19 @@ type UrlController struct {
 	cache *cacheController
 }
 
+var TIMEOUT time.Duration
+
 func CreateUrlController(urlStoreName string, urlCacheName string) UrlController {
+	var cache *cacheController
+	TIMEOUT = viper.GetDuration("cacheTimeout")
+	if viper.GetBool("cacheEnabled") {
+		cache = createCacheController(urlCacheName)
+	} else {
+		cache = nil
+	}
 	return UrlController{
 		db:    CreateController(urlStoreName),
-		cache: createCacheController(urlCacheName),
+		cache: cache,
 	}
 }
 
@@ -36,33 +47,34 @@ func (u *UrlController) Shorten(ctx context.Context, url string, owner string) (
 
 func (u *UrlController) GetUrl(ctx context.Context, url string, owner string) (string, error) {
 	// Try adding cachce
-	CacheCtx, cacheErr := context.WithTimeout(ctx, 3*time.Second)
-	defer cacheErr()
+	CacheCtx, cacheCancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cacheCancel()
 	cacheChannel := make(chan model.UrlModel, 1)
-	go func() {
-		urlObject, err := u.cache.Get(CacheCtx, url, owner)
-		if err != nil {
-			fmt.Println("Error getting from cache")
-			return
-		}
-		cacheChannel <- urlObject
-	}()
+	if viper.GetBool("cacheEnabled") {
+		go func() {
+			urlObject, err := u.cache.Get(CacheCtx, url, owner)
+			if err != nil {
+				fmt.Println("Error getting from cache")
+				return
+			}
+			cacheChannel <- urlObject
+		}()
+	}
 	var urlObject model.UrlModel
 	select {
 	case urlObject = <-cacheChannel:
 		fmt.Println("Cache result:", urlObject)
-	case <-time.After(1 * time.Second):
-		fmt.Println("Timeout!")
+	case <-time.After(TIMEOUT * time.Second):
 		var err error
 		urlObject, err = u.db.Get(ctx, url, owner)
 		if err != nil {
-			fmt.Println("ERROR ", err)
+			fmt.Println("ERROR ", err, ctx)
 
 			return "", nil
 		}
 	}
-	fmt.Println("URL: ", urlObject.OriginalUrl)
-
-	go u.cache.Set(context.TODO(), urlObject)
+	if viper.GetBool("cacheEnabled") {
+		go u.cache.Set(context.TODO(), urlObject)
+	}
 	return urlObject.OriginalUrl, nil
 }

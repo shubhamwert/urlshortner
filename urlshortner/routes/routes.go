@@ -24,7 +24,6 @@ func getIndex(c *fiber.Ctx) error {
 }
 
 func postCreateShortUrl(c *fiber.Ctx) error {
-	fmt.Println(c.Get("x-auth-user"))
 	s, err := handler.Shorten(c.Context(), c.Params("url"), c.Get("x-auth-user", "test"))
 	if err != nil {
 		fmt.Println(err)
@@ -35,8 +34,6 @@ func postCreateShortUrl(c *fiber.Ctx) error {
 	return nil
 }
 func GetShortenUrl(c *fiber.Ctx) error {
-	fmt.Println()
-
 	p := c.Params("url")
 	u, err := handler.GetUrl(c.Context(), p, c.Get("x-auth-user", "test"))
 	if u == "" {
@@ -52,7 +49,6 @@ func GetShortenUrl(c *fiber.Ctx) error {
 	)
 	if err != nil {
 		fmt.Println(err)
-
 	}
 	return nil
 }

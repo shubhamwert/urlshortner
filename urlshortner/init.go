@@ -15,10 +15,10 @@ func CreateApp() *fiber.App {
 
 func InitializeApp(app *fiber.App, handler *controller.UrlController) {
 
-	routes.InitRoutes(app, handler)
 	app.Use(logger.New(logger.Config{
 		Format: "[${ip}]:${port} ${status} - ${method} ${path}\n",
 	}))
+	routes.InitRoutes(app, handler)
 }
 
 func RunApp(app *fiber.App) {

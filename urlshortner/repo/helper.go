@@ -1,21 +1,18 @@
 package repo
 
-import "strings"
-
-const (
-	alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+import (
+	"crypto/md5"
+	b64 "encoding/base64"
+	"hash"
 )
 
-func Base62Encode(number uint64) string {
-	length := len(alphabet)
-	var encodedBuilder strings.Builder
-	encodedBuilder.Grow(10)
-	for ; number > 0; number = number / uint64(length) {
-		encodedBuilder.WriteByte(alphabet[(number % uint64(length))])
-	}
+var md5Controller hash.Hash = md5.New()
 
-	return encodedBuilder.String()
-}
 func CreateShortUrl(url string, length int) string {
-	return url[:length]
+	encodedString := b64.StdEncoding.EncodeToString(md5Controller.Sum([]byte(url)))
+	var result string = ""
+	for i := 1; i < 64; i = 2 * i {
+		result += string(encodedString[i])
+	}
+	return result
 }
