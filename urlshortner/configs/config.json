@@ -12,7 +12,7 @@
     "dynamodb":{
         "tablename": "UrlDb"
     },
-    "storagedb": "mongodb",
+    "storagedb": "dynamodb", 
     "cacheEnabled": false,
     "cachedb": "redis",
     "cacheTimeout": 1

@@ -11,9 +11,6 @@ type controller struct {
 }
 
 func CreateController(dbName string) *controller {
-	// db := model.CreateinMemoryStorage()
-	// db := model.CreateredisStorage()
-	// db := model.CreatemongoStorage("mongodb://admin:password@localhost:27017/", "UrlDb", "ShortenedUrl")
 	fmt.Println(dbName)
 	db, err := CreateStoreHandlerControllerModel(dbName)
 	if err != nil {

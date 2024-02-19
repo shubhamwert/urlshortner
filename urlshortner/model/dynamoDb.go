@@ -1,3 +1,5 @@
+//go:build lambda_dynamo
+
 package model
 
 import (

@@ -1,3 +1,4 @@
+// go: build !nocache
 package controller
 
 import (
