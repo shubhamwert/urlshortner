@@ -15,7 +15,7 @@
     "storagedb": "dynamodb", 
     "cacheEnabled": false,
     "cachedb": "redis",
-    "cacheTimeout": 1
-
+    "cacheTimeout": 1,
+    "DEVELOPMENT": true
 
 }
